@@ -16,7 +16,7 @@ type Profile struct {
 	HsPercent   string
 	DmgPerRound string
 	CombatScore string
-	RankSvgUrl  string
+	RankSvgURL  string
 }
 
 func main() {
