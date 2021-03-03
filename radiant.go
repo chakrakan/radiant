@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"os"
 
@@ -20,11 +19,9 @@ type Profile struct {
 }
 
 func main() {
-	var profileID string
-	flag.StringVar(&profileID, "Your blitz.gg profile id")
-	flag.Parse()
+	profileID := "therealmaatman-8819"
 
-	if itemID == "" {
+	if profileID == "" {
 		log.Println("Profile post id required")
 		os.Exit(1)
 	}
@@ -36,10 +33,12 @@ func main() {
 
 		// Cache responses to prevent multiple download of pages
 		// even if the collector is restarted
-		colly.CacheDir("./rank_cache"),
+		colly.CacheDir("./radiant_cache"),
 	)
 
-	profileInfo := make([]Profile, 0, 200)
+	detailCollector := c.Clone()
+
+	profiles := make([]Profile, 0, 200)
 
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		log.Println(e.Attr("href"))
@@ -50,5 +49,20 @@ func main() {
 		log.Println("visiting", r.URL.String())
 	})
 
-	c.Visit("https://blitz.gg/valorant/profile/" + itemID)
+	// Extract details of the profile
+	detailCollector.OnHTML(`div[id=blitz-app]`, func(e *colly.HTMLElement) {
+		log.Println("Profile found", e.Request.URL)
+		name := e.ChildText(".profile-info")
+		if name == "" {
+			log.Println("No profile found", e.Request.URL)
+		}
+		profile := Profile{
+			Name:       name,
+			LastPlayed:         e.Request.URL.String(),
+		}
+		profiles = append(profiles, profile)
+	})
+
+	c.Visit("https://blitz.gg/valorant/profile/" + profileID)
+
 }
