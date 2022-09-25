@@ -1,6 +1,6 @@
 module github.com/chakrakan/radiant
 
-go 1.15
+go 1.19
 
 require (
 	github.com/PuerkitoBio/goquery v1.6.1 // indirect
