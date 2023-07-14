@@ -1,0 +1,25 @@
+version: 2.1
+
+workflows:
+  daily-job:
+    triggers:
+      - schedule:
+          cron: '0 0 * * *'
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - build-and-run
+
+jobs:
+  build-and-run:
+    docker:
+      - image: cimg/go:1.20.6
+    steps:
+      - checkout
+      - go/install:
+          version: '1.20.6'
+      - run:
+          name: Run script
+          command: go run radiant.go
