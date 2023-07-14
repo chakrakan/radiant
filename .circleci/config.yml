@@ -3,20 +3,8 @@ version: 2.1
 orbs:
   go: circleci/go@1.7.3
 
-workflows:
-  daily-job:
-    triggers:
-      - schedule:
-          cron: '0 0 * * *'
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - build-and-run
-
 jobs:
-  build-and-run:
+  radiant:
     docker:
       - image: cimg/go:1.20.6
     steps:
@@ -25,3 +13,11 @@ jobs:
           cache: true
       - run:
           command: go run radiant.go
+
+workflows:
+  poll:
+    triggers:
+      - schedule:
+          cron: '0 0 * * *'
+    jobs:
+      - radiant
