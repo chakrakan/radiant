@@ -22,7 +22,6 @@ jobs:
     steps:
       - checkout
       - go/install:
-          version: '1.20.6'
+          cache: true
       - run:
-          name: Run script
           command: go run radiant.go
