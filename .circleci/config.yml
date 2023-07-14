@@ -1,17 +1,23 @@
 version: 2.1
 
-orbs:
-  go: circleci/go@1.7.3
-
 jobs:
   radiant:
     docker:
       - image: cimg/go:1.20.6
     steps:
       - checkout
-      - go/install:
-          cache: true
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
       - run:
+          name: Install Dependencies
+          command: go get ./...
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - '/go/pkg/mod'
+      - run:
+          name: Run Scraper
           command: go run radiant.go
 
 workflows:

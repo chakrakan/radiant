@@ -14,5 +14,11 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .vscode
+
+# project specific
+# cache
 radiant_cache/
+
+# .env and exe
 .env
+radiant
