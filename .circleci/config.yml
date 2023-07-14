@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  go: circleci/go@1.7.3
+
 workflows:
   daily-job:
     triggers:
