@@ -17,7 +17,7 @@ import (
 
 const (
 	baseURL  string = "https://tracker.gg/valorant/profile/riot/%s/overview"
-	gistName string = "Valorant Stats"
+	gistName string = "🎮 Valorant Stats"
 )
 
 // Profile stores information about a valorant profile from tracker.gg
@@ -167,7 +167,7 @@ func main() {
 
 	// Prepare the Gist content
 	content := &github.Gist{Files: map[github.GistFilename]github.GistFile{
-		"🎮 Valorant Stats": {Content: github.String(profile.generateMarkdown())},
+		github.GistFilename(gistName): {Content: github.String(profile.generateMarkdown())},
 	}}
 
 	// Prepare the oauth2 config using Github Token
@@ -186,5 +186,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("🎮 Valorant Stats successfully updated at: %s\n", *gist.HTMLURL)
+	fmt.Printf("%s successfully updated at: %s\n", gistName, *gist.HTMLURL)
 }
