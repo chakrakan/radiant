@@ -2,9 +2,19 @@ module github.com/chakrakan/radiant
 
 go 1.20
 
-require github.com/gocolly/colly v1.2.0
+require (
+	github.com/gocolly/colly v1.2.0
+	github.com/google/go-github/v53 v53.2.0
+	golang.org/x/oauth2 v0.10.0
+)
 
-require github.com/google/go-cmp v0.5.6 // indirect
+require (
+	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
+	github.com/cloudflare/circl v1.3.3 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
+	golang.org/x/crypto v0.11.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
+)
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
@@ -15,8 +25,6 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/go-github v17.0.0+incompatible
-	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/joho/godotenv v1.5.1
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
