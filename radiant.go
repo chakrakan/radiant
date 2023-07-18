@@ -32,6 +32,9 @@ type Profile struct {
 	PeakRank          string
 	CurrentRankPngURL string
 	PeakRankPngURL    string
+	EpisodeAct		  string
+	PlayTime		  string
+	Matches			  string
 }
 
 func (p *Profile) setPeakAndCurrentRankInfo(e *colly.HTMLElement) {
@@ -67,17 +70,20 @@ func (p *Profile) setWinsAndLosses(e *colly.HTMLElement) {
 func (p *Profile) generateMarkdown() string {
 	return fmt.Sprintf(
 	`RiotID: %s
+__%s stats__
 Current Rank: %s
 Peak Rank %s
-Wins/Losses: %d/%d
-Headshot Percentage: %.2f
-K/D Ratio: %.2f
+Wins/Losses: %d/%d | Playtime: %s | Matches: %s
+Headshot Percentage: %.2f | K/D Ratio: %.2f
 Average Combat Score: %.2f`,
 		p.Name,
+		p.EpisodeAct,
 		p.CurrentRank,
 		p.PeakRank,
 		p.Wins,
 		p.Losses,
+		p.PlayTime,
+		p.Matches,
 		p.HsPercent,
 		p.KdRatio,
 		p.AvgCombatScore,
@@ -88,7 +94,14 @@ func (p *Profile) setNumericalInfo(e *colly.HTMLElement) {
 	switch {
 	case strings.Contains(e.Text, "ACS"):
 		cleanupLeft := strings.TrimLeft(e.Text, "ACS")
-		acsValue, err := strconv.ParseFloat(strings.Split(cleanupLeft, "Top")[0], 64)
+		var cleanupRight string
+		if strings.Contains(cleanupLeft, "Top") {
+			cleanupRight = strings.TrimRight(cleanupLeft, "T")
+		} else {
+			cleanupRight = strings.TrimRight(cleanupLeft, "B")
+		}
+		log.Println(cleanupRight)
+		acsValue, err := strconv.ParseFloat(cleanupRight, 64)
 		if err != nil {
 			log.Println("Unable to parse ACS")
 		}
@@ -108,6 +121,16 @@ func (p *Profile) setNumericalInfo(e *colly.HTMLElement) {
 		}
 		p.HsPercent = hsPercentage
 	}
+}
+
+func (p *Profile) getActOverview(e *colly.HTMLElement) {
+	splitText := strings.Split(e.Text, " ")
+	act := splitText[0]+splitText[1]
+	playTime := splitText[4]
+	matches := splitText[6]
+	p.EpisodeAct = act
+	p.PlayTime = playTime
+	p.Matches = matches
 }
 
 func main() {
@@ -135,14 +158,15 @@ func main() {
 	c := colly.NewCollector(
 		// Visit only domains: blitz.gg, www.blitz.gg
 		colly.AllowedDomains("tracker.gg", "www.tracker.gg"),
-		// Cache responses to prevent multiple download of pages
-		// even if the collector is restarted
-		colly.CacheDir("./radiant_cache"),
 	)
 
 	// Get ranks
 	c.OnHTML("div.rating-summary__content", func(e *colly.HTMLElement) {
 		profile.setPeakAndCurrentRankInfo(e)
+	})
+
+	c.OnHTML("div.details", func(e *colly.HTMLElement) {
+		profile.getActOverview(e)
 	})
 
 	// Get Numerical data other than wins/losses
@@ -164,6 +188,8 @@ func main() {
 	})
 
 	c.Visit(targetURL)
+
+	log.Println(profile)
 
 	// Prepare the Gist content
 	content := &github.Gist{Files: map[github.GistFilename]github.GistFile{
