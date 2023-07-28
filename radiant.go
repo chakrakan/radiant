@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -34,7 +35,7 @@ type Profile struct {
 	PeakRankPngURL    string
 	EpisodeAct		  string
 	PlayTime		  string
-	Matches			  string
+	Matches			  int64
 }
 
 func (p *Profile) setPeakAndCurrentRankInfo(e *colly.HTMLElement) {
@@ -69,15 +70,14 @@ func (p *Profile) setWinsAndLosses(e *colly.HTMLElement) {
 
 func (p *Profile) generateMarkdown() string {
 	return fmt.Sprintf(
-	`RiotID: %s
-__%s stats__
+	`%s stats | RiotID: %s
 Current Rank: %s
 Peak Rank %s
-Wins/Losses: %d/%d | Playtime: %s | Matches: %s
+Wins/Losses: %d/%d | Playtime: %s | Matches: %d
 Headshot Percentage: %.2f | K/D Ratio: %.2f
 Average Combat Score: %.2f`,
-		p.Name,
 		p.EpisodeAct,
+		p.Name,
 		p.CurrentRank,
 		p.PeakRank,
 		p.Wins,
@@ -91,16 +91,13 @@ Average Combat Score: %.2f`,
 }
 
 func (p *Profile) setNumericalInfo(e *colly.HTMLElement) {
+	pattern := `^(\d+(\.\d+)?)`
+	reg := regexp.MustCompile(pattern)
+
 	switch {
 	case strings.Contains(e.Text, "ACS"):
 		cleanupLeft := strings.TrimLeft(e.Text, "ACS")
-		var cleanupRight string
-		if strings.Contains(cleanupLeft, "Top") {
-			cleanupRight = strings.TrimRight(cleanupLeft, "T")
-		} else {
-			cleanupRight = strings.TrimRight(cleanupLeft, "B")
-		}
-		log.Println(cleanupRight)
+		cleanupRight := reg.FindString(cleanupLeft)
 		acsValue, err := strconv.ParseFloat(cleanupRight, 64)
 		if err != nil {
 			log.Println("Unable to parse ACS")
@@ -127,7 +124,10 @@ func (p *Profile) getActOverview(e *colly.HTMLElement) {
 	splitText := strings.Split(e.Text, " ")
 	act := splitText[0]+splitText[1]
 	playTime := splitText[4]
-	matches := splitText[6]
+	matches, err := strconv.ParseInt(splitText[7], 10, 64)
+	if err != nil {
+		log.Println("Unable to parse matches")
+	}
 	p.EpisodeAct = act
 	p.PlayTime = playTime
 	p.Matches = matches

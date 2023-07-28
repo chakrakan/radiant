@@ -1,29 +1,24 @@
 version: 2.1
 
-jobs:
-  radiant:
+executors:
+  golang:
     docker:
-      - image: cimg/go:1.17
+      - image: 'golang:1.20.6'
+    working_directory: /go/src/github.com/chakrakan/radiant
+
+jobs:
+  build:
+    executor: golang
     steps:
       - checkout
-      - restore_cache: # restores saved cache if no changes are detected since last run
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
-      - install:
-          name: Install Dependencies
-          command: go get ./...
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - '/go/pkg/mod'
+      - run: go mod download
       - run: go build .
-      - run: ./radiant
 
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - radiant
+      - build
     triggers:
       - schedule:
           cron: '0 0 * * *'
