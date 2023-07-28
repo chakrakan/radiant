@@ -20,4 +20,4 @@ TRACKER_PROFILE_ID=<Your tracker profile ID> # e.g. mine is adorn#1625
 
 ### To-do
 
-- [] CI config so repo can be forked and leveraged directly instead of local cloning
+- [ ] CI config so repo can be forked and leveraged directly instead of local cloning
