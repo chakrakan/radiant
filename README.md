@@ -17,3 +17,7 @@ TRACKER_PROFILE_ID=<Your tracker profile ID> # e.g. mine is adorn#1625
 3. Run the scraper with `go run radiant.go`
 4. ...
 5. Profit???
+
+### To-do
+
+- [] CI config so repo can be forked and leveraged directly instead of local cloning
