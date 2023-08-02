@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - run: go mod download
-      - run: go build .
+      - run: go run radiant.go
 
 workflows:
   version: 2
