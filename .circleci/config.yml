@@ -12,7 +12,8 @@ jobs:
     steps:
       - checkout
       - run: go mod download
-      - run: go run radiant.go
+      - run: go build .
+      - run: chmod +x radiant && ./radiant
 
 workflows:
   version: 2
