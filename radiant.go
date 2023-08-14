@@ -161,7 +161,7 @@ func main() {
 
 	// Instantiate default collector and scrape
 	c := colly.NewCollector(
-		// Visit only domains: blitz.gg, www.blitz.gg
+		// Visit only domains: tracker.gg, www.tracker.gg
 		colly.AllowedDomains("tracker.gg", "www.tracker.gg"),
 	)
 
