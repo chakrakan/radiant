@@ -28,6 +28,7 @@ type Profile struct {
 	HsPercent         float64
 	Wins              int
 	Losses            int
+	Draws             int
 	AvgCombatScore    float64
 	CurrentRank       string
 	PeakRank          string
@@ -66,6 +67,9 @@ func (p *Profile) setWinsAndLosses(e *colly.HTMLElement) {
 		log.Printf("Error converting losses: %s", err.Error())
 	}
 	p.Losses = losses
+	if p.Matches != 0 {
+		p.Draws = int(p.Matches) - (p.Wins + p.Losses)
+	}
 }
 
 func (p *Profile) generateMarkdown() string {
@@ -73,7 +77,7 @@ func (p *Profile) generateMarkdown() string {
 	`%s stats | RiotID: %s
 Current Rank: %s
 Peak Rank %s
-Wins/Losses: %d/%d | Playtime: %s | Matches: %d
+Wins/Losses/Draws: %d/%d/%d | Playtime: %s | Matches: %d
 Headshot Percentage: %.2f | K/D Ratio: %.2f
 Average Combat Score: %.2f`,
 		p.EpisodeAct,
@@ -82,6 +86,7 @@ Average Combat Score: %.2f`,
 		p.PeakRank,
 		p.Wins,
 		p.Losses,
+		p.Draws,
 		p.PlayTime,
 		p.Matches,
 		p.HsPercent,
