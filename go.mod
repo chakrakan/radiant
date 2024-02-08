@@ -6,6 +6,7 @@ require (
 	github.com/gocolly/colly v1.2.0
 	github.com/google/go-github/v53 v53.2.0
 	github.com/google/go-github/v57 v57.0.0
+	github.com/google/go-github/v58 v58.0.0
 	golang.org/x/oauth2 v0.17.0
 )
 
