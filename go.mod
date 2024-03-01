@@ -6,7 +6,7 @@ toolchain go1.22.0
 
 require (
 	github.com/gocolly/colly v1.2.0
-	github.com/google/go-github/v53 v53.2.0
+	github.com/google/go-github/v60 v60.0.0
 	github.com/google/go-github/v60 v60.0.0
 	golang.org/x/oauth2 v0.17.0
 )
