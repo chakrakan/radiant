@@ -2,7 +2,7 @@ module github.com/chakrakan/radiant
 
 go 1.21
 
-toolchain go1.22.0
+toolchain go1.23.2
 
 require (
 	github.com/gocolly/colly v1.2.0
