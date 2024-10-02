@@ -3,7 +3,7 @@ version: 2.1
 executors:
   golang:
     docker:
-      - image: 'golang:1.22.0'
+      - image: 'golang:1.23.2'
     working_directory: /go/src/github.com/chakrakan/radiant
 
 jobs:
